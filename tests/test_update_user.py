@@ -6,22 +6,41 @@ import allure
 
 
 class TestUpdateUser:
-    @allure.title("Проверка изменения поля {field} с авторизацией")
-    @pytest.mark.parametrize("field", ["email", "name", "password"])
-    def test_update_user_field_with_auth(self, registered_user, field):
+
+    @allure.title("Проверка изменения email с авторизацией")
+    def test_update_user_email_with_auth(self, registered_user):
         auth = AuthApi()
-        if field == "email":
-            new_value = f"{generate_random_string(10)}@yandex.ru"
-        else:
-            new_value = generate_random_string(10)
-        new_data = {field: new_value}
+        new_value = f"{generate_random_string(10)}@yandex.ru"
+        new_data = {"email": new_value}
 
         response = auth.patch_user_data_with_auth(registered_user["access_token"], new_data)
         body = response.json()
         assert response.status_code == 200
         assert body["success"] is True
-        if field != "password":
-            assert body["user"][field] == new_value
+        assert body["user"]["email"] == new_value
+
+    @allure.title("Проверка изменения имени с авторизацией")
+    def test_update_user_name_with_auth(self, registered_user):
+        auth = AuthApi()
+        new_value = generate_random_string(10)
+        new_data = {"name": new_value}
+
+        response = auth.patch_user_data_with_auth(registered_user["access_token"], new_data)
+        body = response.json()
+        assert response.status_code == 200
+        assert body["success"] is True
+        assert body["user"]["name"] == new_value
+
+    @allure.title("Проверка изменения пароля с авторизацией")
+    def test_update_user_password_with_auth(self, registered_user):
+        auth = AuthApi()
+        new_value = generate_random_string(10)
+        new_data = {"password": new_value}
+
+        response = auth.patch_user_data_with_auth(registered_user["access_token"], new_data)
+        body = response.json()
+        assert response.status_code == 200
+        assert body["success"] is True
 
     @allure.title("Проверка изменения данных пользователя без авторизации")
     def test_update_user_without_auth(self, registered_user):
