@@ -1,4 +1,3 @@
-import pytest
 from api_methods.auth_api import AuthApi
 from helpers import generate_random_string
 from data import Messages
